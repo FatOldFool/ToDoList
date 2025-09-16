@@ -6,17 +6,17 @@ import java.time.LocalDateTime;
 
 public class Task {
     private String name;
-    private String priority;
+    private int priority;
     private LocalDate creationDate;
     private String finishDateTime;
-    private String status;
+    private String status = "Невыполнена";
 
-    public Task(String name, String priority, String status) {
+    public Task(String name, int priority) {
         this.name = name;
         this.priority = priority;
         this.creationDate = LocalDate.now();
         finishDateTime = "Отсутсвует";
-        this.status = status;
+
     }
 
 
@@ -52,11 +52,11 @@ public class Task {
         this.name = name;
     }
 
-    public String getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
