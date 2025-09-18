@@ -1,97 +1,66 @@
 package com.fatoldfool.main;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class TaskManager {
 
-    private List<String> menu;
     private List<Task> tasks;
-    private int userInput;
     private Scanner scanner;
+    private static int number;
 
-    TaskManager() {
-        menu = new ArrayList<>();
-        tasks = new ArrayList<>();
-        addMenuToList();
-        showMenu();
-        userInputProcess();
+    TaskManager(){
+        tasks = new ArrayList();
+        scanner = new Scanner(System.in);
     }
 
-    void addMenuToList() {
-        menu.add("1. Добавить задачу");
-        menu.add("2. Удалить задачу");
-        menu.add("3. Отредактировать задачу");
-        menu.add("4. Показать все задачи");
-        menu.add("5. Фильтровать задачи по статусу");
-        menu.add("6. Найти задачу по ключевому слову");
-        menu.add("7. Изменить статус задачи");
-        menu.add("8. Показать статистику");
-        menu.add("9. Выход");
+    void addTask(String name, int priority){
+        number++;
+        tasks.add(new Task(name, priority, number));
     }
 
-    void showMenu() {
-        System.out.println("Добро пожаловать в приложение \"Управление списком задач!\"\n");
-
-        for (String menuItem : menu) {
-            System.out.println(menuItem);
+    void deleteTask(int num){
+        if(num >= 0 && num <= tasks.size()){
+            tasks.remove(num);
+            number--;
+        }else{
+            System.out.println("Неверный номер!");
         }
-
-        System.out.print("\nВыберите действие: ");
     }
 
-    void userInputProcess() {
+    void changeName(int num){
+        String newName = scanner.nextLine();
+        if(num >= 0 && num <= tasks.size()){
+            tasks.get(num).setName(newName);
+        }else{
+            System.out.println("Неверный номер!");
+        }
+    }
 
-        while(true){
-            scanner = new Scanner(System.in);
-            userInput = scanner.nextInt();
-            if(userInput == 1){
-                Scanner scanner = new Scanner(System.in);
-                System.out.print("Введите название задачи: ");
-                String taskName = scanner.nextLine();
-                System.out.print("Введите приоритет (число): ");
-                int priority = Integer.parseInt(scanner.nextLine());
-                System.out.println("Задача добавлена!\n");
+    void changePriority(int num){
+        int newPriority = scanner.nextInt();
+        if(num >= 0 && num <= tasks.size()){
+            tasks.get(num).setPriority(newPriority);
+        }else{
+            System.out.println("Неверный номер!");
+        }
+    }
 
-                System.out.println();
-            } else if (userInput == 9) {
-                System.exit(0);
+    void changeStatus(int num){
+        String newStatus = scanner.nextLine();
+        if(num >= 0 && num <= tasks.size()){
+            if(newStatus.equals("Выполнена") || newStatus.equals("В процессе") || newStatus.equals("Не выполнена")){
+                tasks.get(num).setStatus(newStatus);
+            }else{
+                System.out.println("Неверный статус!");
             }
-            showMenu();
-        }
-
-
-    }
-
-
-    void addTask(String taskName, int priority) {
-        tasks.add(new Task(taskName, priority));
-    }
-
-    void deleteTask() {
-        if (userInput == 0) {
-            System.out.println("Задачи с таким номером не существует!");
-        } else {
-            tasks.remove(userInput - 1);
+        }else{
+            System.out.println("Неверный номер!");
         }
     }
 
-
-    void editName(int number, String name) {
-        Task task = tasks.get(number - 1);
-        task.setName(name);
-    }
-
-    void editPriority(int number, int priority) {
-        Task task = tasks.get(number - 1);
-        task.setPriority(priority);
-    }
-
-    void showAllTasks() {
-        for (Task task : tasks) {
+    void showAllTasks(){
+        for(Task task : tasks){
             System.out.println(task);
         }
     }
-
 }
