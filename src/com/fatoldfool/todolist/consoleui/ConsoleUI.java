@@ -1,21 +1,16 @@
 package com.fatoldfool.todolist.consoleui;
 
 import com.fatoldfool.todolist.taskservice.TaskService;
-import com.fatoldfool.todolist.userinputvalidator.UserInputValidator;
 
 import java.util.Scanner;
 
 public class ConsoleUI {
 
     private TaskService taskService;
-    private UserInputValidator userInputValidator;
-    private boolean isRunning;
     private Scanner userInput;
 
     public ConsoleUI() {
         taskService = new TaskService();
-        userInputValidator = new UserInputValidator();
-        isRunning = true;
         userInput = new Scanner(System.in);
         run();
     }
@@ -26,21 +21,33 @@ public class ConsoleUI {
 
             showMenu();
 
-            String choice = requestMenuChoice(); // <-- наш метод
+            String choice = requestMenuChoice();
 
             switch (choice) {
                 case "1" -> taskService.addTask();
                 case "2" -> {
-                    int id = readInt("Введите ID задачи для удаления: ");
-                    taskService.deleteTask(id);
+                    if(taskService.getTask().isEmpty()){
+                        noTask();
+                    }else{
+                        int id = readInt("Введите ID задачи для удаления: ");
+                        taskService.deleteTask(id);
+                    }
                 }
                 case "3" -> {
-                    int id = readInt("Введите ID задачи для редактирования: ");
-                    taskService.editTask(id);
+                    if(taskService.getTask().isEmpty()){
+                        noTask();
+                    }else{
+                        int id = readInt("Введите ID задачи для редактирования: ");
+                        taskService.editTask(id);
+                    }
                 }
                 case "4" -> {
-                    int id = readInt("Введите ID задачи для изменения статуса: ");
-                    taskService.changeTaskStatus(id);
+                    if(taskService.getTask().isEmpty()){
+                        noTask();
+                    }else{
+                        int id = readInt("Введите ID задачи для редактирования: ");
+                        taskService.editTask(id);
+                    }
                 }
                 case "5" -> taskService.showAllTasks();
                 case "6" -> taskService.filterTaskByStatus();
@@ -51,7 +58,7 @@ public class ConsoleUI {
             }
 
             System.out.println("\nНажмите <Enter> для продолжения...");
-            new java.util.Scanner(System.in).nextLine(); // пауза
+            new java.util.Scanner(System.in).nextLine();
         }
     }
 
@@ -89,5 +96,9 @@ public class ConsoleUI {
                 System.out.println("❗ Введите корректное число.");
             }
         }
+    }
+
+    private void noTask(){
+        System.out.println("📭 Нет созданных задач. Добавьте первую задачу.");
     }
 }

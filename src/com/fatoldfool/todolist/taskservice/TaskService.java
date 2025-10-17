@@ -323,4 +323,8 @@ public class TaskService {
         System.out.println("Выход из приложения... Спасибо за использование TodoList!");
         System.exit(0);
     }
+
+    public List<Task> getTask(){
+        return tasks;
+    }
 }
