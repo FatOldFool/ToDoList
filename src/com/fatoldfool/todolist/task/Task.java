@@ -34,18 +34,6 @@ public class Task {
         return priority;
     }
 
-//    public LocalDate getCreationDate() {
-//        return creationDate;
-//    }
-//
-//    public LocalDateTime getCompletionTime() {
-//        return completionTime;
-//    }
-//
-//    public boolean isCompleted() {
-//        return isCompleted;
-//    }
-
     public TaskStatus getTaskStatus() {
         return taskStatus;
     }
@@ -61,19 +49,6 @@ public class Task {
         this.priority = priority;
     }
 
-//    public void setCompletionTime(LocalDateTime completionTime) {
-//        this.completionTime = completionTime;
-//    }
-//
-//    public void setCompleted(boolean completed) {
-//        isCompleted = completed;
-//        this.taskStatus = completed ? TaskStatus.COMPLETE : TaskStatus.NOT_COMPLETE;
-//        if (completed) {
-//            this.completionTime = LocalDateTime.now();
-//        } else {
-//            this.completionTime = null;
-//        }
-//    }
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;

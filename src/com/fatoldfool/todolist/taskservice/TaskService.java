@@ -267,7 +267,6 @@ public class TaskService {
     public void findTaskByKeyWord() {
 
         if (!userInputValidator.hasTasks(tasks)) {
-            //System.out.println("📭 Список задач пока пуст.");
             return;
         }
 
