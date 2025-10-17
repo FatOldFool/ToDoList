@@ -3,7 +3,6 @@ package com.fatoldfool.todolist.taskservice;
 import com.fatoldfool.todolist.task.Task;
 import com.fatoldfool.todolist.userinputvalidator.UserInputValidator;
 
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
@@ -57,16 +56,19 @@ public class TaskService {
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
-                case "1": return Task.TaskStatus.NOT_COMPLETE;
-                case "2": return Task.TaskStatus.IN_PROGRESS;
-                case "3": return Task.TaskStatus.COMPLETE;
+                case "1":
+                    return Task.TaskStatus.NOT_COMPLETE;
+                case "2":
+                    return Task.TaskStatus.IN_PROGRESS;
+                case "3":
+                    return Task.TaskStatus.COMPLETE;
                 default:
                     System.out.println("❗ Неправильный ввод. Выберите 1, 2 или 3.");
             }
         }
     }
 
-    private String userInputNewTaskName(){
+    private String userInputNewTaskName() {
         String title = "";
 
         while (true) {
@@ -81,7 +83,7 @@ public class TaskService {
         }
     }
 
-    private int userInputNewTaskPriority(){
+    private int userInputNewTaskPriority() {
         String input = "";
 
         while (true) {
@@ -105,18 +107,18 @@ public class TaskService {
 
     public void deleteTask(int id) {
 
-            if (userInputValidator.isValidTaskId(id, tasks)) {
-                Iterator<Task> it = tasks.iterator();
-                while (it.hasNext()) {
-                    if (it.next().getId() == id) {
-                        it.remove();
-                        System.out.println("🗑️ Задача с id=" + id + " удалена.");
-                        break;
-                    }
+        if (userInputValidator.isValidTaskId(id, tasks)) {
+            Iterator<Task> it = tasks.iterator();
+            while (it.hasNext()) {
+                if (it.next().getId() == id) {
+                    it.remove();
+                    System.out.println("🗑️ Задача с id=" + id + " удалена.");
+                    break;
                 }
-            } else {
-                System.out.println("❗ Задача с id=" + id + " не найдена.");
             }
+        } else {
+            System.out.println("❗ Задача с id=" + id + " не найдена.");
+        }
 
     }
 
@@ -198,7 +200,7 @@ public class TaskService {
 
     public void filterTaskByStatus() {
 
-        if(userInputValidator.hasTasks(tasks)){
+        if (userInputValidator.hasTasks(tasks)) {
             List<Task> completedTasks = new ArrayList<>();
             List<Task> inProgressTasks = new ArrayList<>();
             List<Task> notCompletedTasks = new ArrayList<>();
@@ -324,7 +326,7 @@ public class TaskService {
         System.exit(0);
     }
 
-    public List<Task> getTask(){
+    public List<Task> getTask() {
         return tasks;
     }
 }

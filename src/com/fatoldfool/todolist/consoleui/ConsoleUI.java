@@ -26,27 +26,27 @@ public class ConsoleUI {
             switch (choice) {
                 case "1" -> taskService.addTask();
                 case "2" -> {
-                    if(taskService.getTask().isEmpty()){
+                    if (taskService.getTask().isEmpty()) {
                         noTask();
-                    }else{
+                    } else {
                         int id = readInt("Введите ID задачи для удаления: ");
                         taskService.deleteTask(id);
                     }
                 }
                 case "3" -> {
-                    if(taskService.getTask().isEmpty()){
+                    if (taskService.getTask().isEmpty()) {
                         noTask();
-                    }else{
+                    } else {
                         int id = readInt("Введите ID задачи для редактирования: ");
                         taskService.editTask(id);
                     }
                 }
                 case "4" -> {
-                    if(taskService.getTask().isEmpty()){
+                    if (taskService.getTask().isEmpty()) {
                         noTask();
-                    }else{
+                    } else {
                         int id = readInt("Введите ID задачи для редактирования: ");
-                        taskService.editTask(id);
+                        taskService.changeTaskStatus(id);
                     }
                 }
                 case "5" -> taskService.showAllTasks();
@@ -98,7 +98,7 @@ public class ConsoleUI {
         }
     }
 
-    private void noTask(){
+    private void noTask() {
         System.out.println("📭 Нет созданных задач. Добавьте первую задачу.");
     }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 public class UserInputValidator {
 
     public boolean isValidTaskId(int id, List<Task> tasks) {
+
         for (Task task : tasks) {
             if (task.getId() == id) {
                 return true;
