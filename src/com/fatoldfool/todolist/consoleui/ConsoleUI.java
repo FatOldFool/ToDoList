@@ -13,7 +13,7 @@ public class ConsoleUI {
     private TaskService taskService;
     private UserInputValidator userInputValidator;
     private Scanner scanner;
-    private static final String OPERATION_COMPLETED_SUCCESFULY = "Операция завершена успешно!";
+    private static final String OPERATION_COMPLETED_SUCCESSFULY = "Операция завершена успешно!";
     private boolean isRunning;
 
     public ConsoleUI(TaskService taskService, UserInputValidator userInputValidator) {
@@ -438,7 +438,7 @@ public class ConsoleUI {
 
     private void operationCompletedSuccessfully() {
         System.out.println();
-        System.out.println(OPERATION_COMPLETED_SUCCESFULY);
+        System.out.println(OPERATION_COMPLETED_SUCCESSFULY);
         System.out.println();
         enter();
     }
