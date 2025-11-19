@@ -7,13 +7,14 @@ import com.fatoldfool.todolist.exceptions.*;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.Callable;
 
 public class ConsoleUI {
 
     private TaskService taskService;
     private UserInputValidator userInputValidator;
     private Scanner scanner;
-    private static final String OPERATION_COMPLETED_SUCCESSFULY = "Операция завершена успешно!";
+    private static final String OPERATION_COMPLETED_SUCCESSFULLY = "Операция завершена успешно!";
     private boolean isRunning;
 
     public ConsoleUI(TaskService taskService, UserInputValidator userInputValidator) {
@@ -26,298 +27,129 @@ public class ConsoleUI {
 
     private void run() {
         while (isRunning) {
-            showMenu();
-
-            String choice = null;
 
             try {
+                showMenu();
+                String choice = null;
                 choice = requestMenuChoice();
+
+                switch (choice) {
+                    case "1" -> add();
+                    case "2" -> delete();
+                    case "3" -> changeTaskNameAndPriority();
+                    case "4" -> changeTaskStatus();
+                    case "5" -> showAll();
+                    case "6" -> filter();
+                    case "7" -> findByKeyWord();
+                    case "8" -> statistics();
+                    case "9" -> exit();
+                }
             } catch (IncorrectMenuChoiceException e) {
                 System.out.println(e.getMessage());
                 enter();
-                run();
-            }
-
-            switch (choice) {
-
-                case "1" -> add();
-                case "2" -> delete();
-                case "3" -> changeTaskNameAndPriority();
-                case "4" -> changeTaskStatus();
-                case "5" -> showAll();
-                case "6" -> filter();
-                case "7" -> findByKeyWord();
-                case "8" -> statistics();
-                case "9" -> exit();
-
-            }
-
-        }
-
-    }
-
-    private void add() {
-        String taskName = null;
-        int taskPriority = 0;
-        boolean isTaskNameCorrect = false;
-        boolean isTaskPriorityCorrect = false;
-
-        while (!isTaskNameCorrect) {
-            try {
-                taskName = requestTaskName();
-                isTaskNameCorrect = true;
-            } catch (IncorrectTaskNameException e) {
-                System.out.println(e.getMessage());
-                enter();
-            }
-        }
-
-        while (!isTaskPriorityCorrect) {
-            try {
-                taskPriority = Integer.parseInt(requestTaskPriority());
-                isTaskPriorityCorrect = true;
-            } catch (IncorrectTaskPriorityException e) {
-                System.out.println(e.getMessage());
-                enter();
-            }
-        }
-
-        taskService.addTask(taskName, taskPriority);
-        operationCompletedSuccessfully();
-    }
-
-    private void delete() {
-        int taskID = 0;
-        boolean isTaskIdCorrect = false;
-        boolean isListContainsTaskWithThisID = false;
-
-        try {
-            userInputValidator.hasTasks(taskService.getTaskList());
-        } catch (EmptyTaskListException e) {
-            System.out.println(e.getMessage());
-            enter();
-            run();
-        }
-
-        while (!isTaskIdCorrect) {
-            try {
-                taskID = Integer.parseInt(requestID());
-                isTaskIdCorrect = true;
-            } catch (IncorrectIDException e) {
-                System.out.println(e.getMessage());
-                enter();
-            }
-        }
-
-        while (!isListContainsTaskWithThisID) {
-            try {
-                userInputValidator.isThereAtaskWithThisIdInTheList(taskID, taskService.getTaskList());
-                isListContainsTaskWithThisID = true;
             } catch (NoTaskWithThisIDInTheList e) {
                 System.out.println(e.getMessage());
                 enter();
-            }
-        }
-
-        taskService.deleteTask(taskID);
-        operationCompletedSuccessfully();
-    }
-
-    private void changeTaskNameAndPriority() {
-        int taskID = 0;
-        String newTaskName = null;
-        int newTaskPriority = 0;
-
-        boolean isTaskIdCorrect = false;
-        boolean isThereATaskInTheList = false;
-
-        boolean isNewTaskNameCorrect = false;
-        boolean isNewTaskPriorityCorrect = false;
-
-        try {
-            userInputValidator.hasTasks(taskService.getTaskList());
-        } catch (EmptyTaskListException e) {
-            System.out.println(e.getMessage());
-            enter();
-            run();
-        }
-
-        while (!isTaskIdCorrect) {
-            try {
-                taskID = Integer.parseInt(requestID());
-                isTaskIdCorrect = true;
+            } catch (EmptyTaskListException e) {
+                System.out.println(e.getMessage());
+                enter();
             } catch (IncorrectIDException e) {
-                System.out.println(e.getMessage());
-                enter();
-            }
-
-        }
-
-        while (!isThereATaskInTheList) {
-            try {
-                userInputValidator.isThereAtaskWithThisIdInTheList(taskID, taskService.getTaskList());
-                isThereATaskInTheList = true;
-            } catch (NoTaskWithThisIDInTheList e) {
-                System.out.println(e.getMessage());
-                enter();
-            }
-        }
-
-        while (!isNewTaskNameCorrect) {
-            try {
-                newTaskName = requestNewTaskName();
-                isNewTaskNameCorrect = true;
-            } catch (IncorrectTaskNameException e) {
                 System.out.println(e.getMessage());
                 enter();
             } catch (IncorrectNewTaskNameException e) {
                 System.out.println(e.getMessage());
                 enter();
-            }
-
-        }
-
-        while (!isNewTaskPriorityCorrect) {
-            try {
-                newTaskPriority = Integer.parseInt(requestNewTaskPriority(taskID));
-                isNewTaskPriorityCorrect = true;
-            } catch (IncorrectTaskPriorityException e) {
-                System.out.println(e.getMessage());
-                enter();
             } catch (IncorrectNewTaskPriorityException e) {
                 System.out.println(e.getMessage());
                 enter();
-            }
-        }
-
-        taskService.editTask(taskID, newTaskName, newTaskPriority);
-        operationCompletedSuccessfully();
-
-    }
-
-    private void changeTaskStatus() {
-        int taskID = 0;
-        boolean isTaskIdCorrect = false;
-        boolean isListContainsTaskWithThisID = false;
-        String newTaskStatus = null;
-        boolean isNewTaskStatusCorrect = false;
-        boolean isNewTaskStatusTheSame = false;
-
-        try {
-            userInputValidator.hasTasks(taskService.getTaskList());
-        } catch (EmptyTaskListException e) {
-            System.out.println(e.getMessage());
-            enter();
-            run();
-        }
-
-        while (!isTaskIdCorrect) {
-            try {
-                taskID = Integer.parseInt(requestID());
-                isTaskIdCorrect = true;
-            } catch (IncorrectIDException e) {
-                System.out.println(e.getMessage());
-                enter();
-            }
-        }
-
-        while (!isListContainsTaskWithThisID) {
-            try {
-                userInputValidator.isThereAtaskWithThisIdInTheList(taskID, taskService.getTaskList());
-                isListContainsTaskWithThisID = true;
-            } catch (NoTaskWithThisIDInTheList e) {
-                System.out.println(e.getMessage());
-                enter();
-            }
-        }
-
-        while (!isNewTaskStatusCorrect || !isNewTaskStatusTheSame) {
-            try {
-                newTaskStatus = requestNewTaskStatus();
-                userInputValidator.isNewTaskStatusCorrect(newTaskStatus, taskService.getTaskList());
-                isNewTaskStatusCorrect = true;
-
-                userInputValidator.isNewTaskStatusTheSame(newTaskStatus, taskService.getTaskList());
-                isNewTaskStatusTheSame = true;
             } catch (IncorrectNewTaskStatusException e) {
                 System.out.println(e.getMessage());
                 enter();
             } catch (SameTaskStatusException e) {
                 System.out.println(e.getMessage());
                 enter();
+            } catch (NoTaskWithThisKeyWordInTheList e) {
+                System.out.println(e.getMessage());
+                enter();
             }
         }
+    }
+
+    private void add() {
+        String taskName = repeatUntilEnteredCorrectly(() -> requestTaskName());
+        int taskPriority = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestTaskPriority()));
+        taskService.addTask(taskName, taskPriority);
+        operationCompletedSuccessfully();
+    }
+
+    private void delete() throws IncorrectIDException, EmptyTaskListException, NoTaskWithThisIDInTheList {
+        userInputValidator.hasTasks(taskService.getTaskList());
+        int taskID = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestID()));
+        userInputValidator.isThereAtaskWithThisIdInTheList(taskID, taskService.getTaskList());
+        taskService.deleteTask(taskID);
+        operationCompletedSuccessfully();
+    }
+
+    private void changeTaskNameAndPriority() throws IncorrectIDException, EmptyTaskListException, NoTaskWithThisIDInTheList,
+            IncorrectNewTaskNameException, IncorrectNewTaskPriorityException {
+
+        userInputValidator.hasTasks(taskService.getTaskList());
+
+        int taskID = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestID()));
+        userInputValidator.isThereAtaskWithThisIdInTheList(taskID, taskService.getTaskList());
+
+        String newTaskName = repeatUntilEnteredCorrectly(() -> requestNewTaskName());
+        int finalTaskID = taskID;
+        int newTaskPriority = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestNewTaskPriority(finalTaskID)));
+
+        taskService.editTask(taskID, newTaskName, newTaskPriority);
+        operationCompletedSuccessfully();
+
+    }
+
+    private void changeTaskStatus() throws IncorrectIDException, EmptyTaskListException, NoTaskWithThisIDInTheList,
+            IncorrectNewTaskStatusException, SameTaskStatusException {
+
+        userInputValidator.hasTasks(taskService.getTaskList());
+
+        int taskID = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestID()));
+        userInputValidator.isThereAtaskWithThisIdInTheList(taskID, taskService.getTaskList());
+
+        String newTaskStatus = repeatUntilEnteredCorrectly(() -> requestNewTaskStatus());
+        userInputValidator.isNewTaskStatusCorrect(newTaskStatus, taskService.getTaskList());
+        userInputValidator.isNewTaskStatusTheSame(newTaskStatus, taskService.getTaskList());
 
         taskService.changeTaskStatus(taskID, newTaskStatus);
         operationCompletedSuccessfully();
     }
 
-    private void showAll() {
-        try {
-            userInputValidator.hasTasks(taskService.getTaskList());
-            taskService.showAllTasks();
-            operationCompletedSuccessfully();
-        } catch (EmptyTaskListException e) {
-            System.out.println(e.getMessage());
-            enter();
-        } finally {
-            run();
-        }
+    private void showAll() throws EmptyTaskListException {
+        userInputValidator.hasTasks(taskService.getTaskList());
+        taskService.showAllTasks();
+        operationCompletedSuccessfully();
     }
 
-    private void filter() {
-        try {
-            userInputValidator.hasTasks(taskService.getTaskList());
-            taskService.filterTasksByStatus();
-            operationCompletedSuccessfully();
-        } catch (EmptyTaskListException e) {
-            System.out.println(e.getMessage());
-            enter();
-        } finally {
-            run();
-        }
+    private void filter() throws EmptyTaskListException {
+        userInputValidator.hasTasks(taskService.getTaskList());
+        taskService.filterTasksByStatus();
+        operationCompletedSuccessfully();
+
     }
 
-    private void findByKeyWord() {
-        String keyWord = null;
-        boolean isListContainsTaskWhitThisKeyWord = false;
+    private void findByKeyWord() throws EmptyTaskListException, NoTaskWithThisKeyWordInTheList {
+        userInputValidator.hasTasks(taskService.getTaskList());
 
-        try {
-            userInputValidator.hasTasks(taskService.getTaskList());
-        } catch (EmptyTaskListException e) {
-            System.out.println(e.getMessage());
-            enter();
-            run();
-        }
-
-        keyWord = requestKeyWord();
-
-        while (!isListContainsTaskWhitThisKeyWord) {
-            try {
-                userInputValidator.isThereATaskWithThisKeyWordInTheList(keyWord, taskService.getTaskList());
-                isListContainsTaskWhitThisKeyWord = true;
-            } catch (NoTaskWithThisKeyWordInTheList e) {
-                System.out.println(e.getMessage());
-                enter();
-                run();
-            }
-        }
+        String keyWord = requestKeyWord();
+        userInputValidator.isThereATaskWithThisKeyWordInTheList(keyWord, taskService.getTaskList());
 
         taskService.findTaskByKeyWord(keyWord);
         operationCompletedSuccessfully();
     }
 
-    private void statistics() {
-        try {
-            userInputValidator.hasTasks(taskService.getTaskList());
-            taskService.showStatistics();
-            operationCompletedSuccessfully();
-        } catch (EmptyTaskListException e) {
-            System.out.println(e.getMessage());
-            enter();
-        } finally {
-            run();
-        }
+    private void statistics() throws EmptyTaskListException {
+        userInputValidator.hasTasks(taskService.getTaskList());
+        taskService.showStatistics();
+        operationCompletedSuccessfully();
     }
 
     private void exit() {
@@ -344,6 +176,7 @@ public class ConsoleUI {
         if (!userInputValidator.isTheIdCorrect(input, taskService.getTaskList())) {
             throw new IncorrectIDException("Неверный ID!");
         }
+
         return input;
     }
 
@@ -354,11 +187,11 @@ public class ConsoleUI {
         if (!userInputValidator.isTaskNameCorrect(input)) {
             throw new IncorrectTaskNameException("❗ Некорректное название. Попробуйте ещё раз.");
         }
+
         return input;
     }
 
     private String requestNewTaskName() throws IncorrectTaskNameException, IncorrectNewTaskNameException {
-
         System.out.println("Введите новое название задачи: ");
         String newTaskName = scanner.nextLine();
         List<Task> tasks = taskService.getTaskList();
@@ -370,6 +203,7 @@ public class ConsoleUI {
         if (!userInputValidator.isNewTaskNameCorrect(newTaskName, tasks)) {
             throw new IncorrectNewTaskNameException("Задача с таким названием уже существует!");
         }
+
         return newTaskName;
     }
 
@@ -380,11 +214,13 @@ public class ConsoleUI {
         if (!userInputValidator.isTaskPriorityCorrect(taskPriority)) {
             throw new IncorrectTaskPriorityException("Некорректный приоритет!");
         }
+
         return taskPriority;
     }
 
-    private String requestNewTaskPriority(int taskID)
-            throws IncorrectTaskPriorityException, IncorrectNewTaskPriorityException {
+    private String requestNewTaskPriority(int taskID) throws IncorrectTaskPriorityException,
+            IncorrectNewTaskPriorityException {
+
         System.out.println("Введите новый приоритет задачи (1 - 10): ");
         String newTaskPriority = scanner.nextLine();
         List<Task> tasks = taskService.getTaskList();
@@ -397,6 +233,7 @@ public class ConsoleUI {
             throw new IncorrectNewTaskPriorityException(
                     "Приоритет: " + newTaskPriority + " уже установлен в задаче № " + taskID);
         }
+
         return newTaskPriority;
     }
 
@@ -411,6 +248,7 @@ public class ConsoleUI {
         if (!userInputValidator.isNewTaskStatusCorrect(input, taskService.getTaskList())) {
             throw new IncorrectNewTaskStatusException("Некорректный статус");
         }
+
         return input;
     }
 
@@ -433,19 +271,27 @@ public class ConsoleUI {
         System.out.println("7. Поиск задачи по ключевому слову");
         System.out.println("8. Статистика");
         System.out.println("9. Выход");
-
     }
 
     private void operationCompletedSuccessfully() {
         System.out.println();
-        System.out.println(OPERATION_COMPLETED_SUCCESSFULY);
+        System.out.println(OPERATION_COMPLETED_SUCCESSFULLY);
         System.out.println();
         enter();
     }
 
     private void enter() {
         System.out.println("\nНажмите <Enter> для продолжения...");
-        new java.util.Scanner(System.in).nextLine();
+        scanner.nextLine();
     }
 
+    private <T> T repeatUntilEnteredCorrectly(Callable<T> action) {
+        while (true) {
+            try {
+                return action.call();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
 }
