@@ -11,9 +11,9 @@ import java.util.concurrent.Callable;
 
 public class ConsoleUI {
 
-    private TaskService taskService;
-    private UserInputValidator userInputValidator;
-    private Scanner scanner;
+    private final TaskService taskService;
+    private final UserInputValidator userInputValidator;
+    private final Scanner scanner;
     private static final String OPERATION_COMPLETED_SUCCESSFULLY = "Операция завершена успешно!";
     private boolean isRunning;
 
@@ -30,8 +30,7 @@ public class ConsoleUI {
 
             try {
                 showMenu();
-                String choice = null;
-                choice = requestMenuChoice();
+                String choice = requestMenuChoice();
 
                 switch (choice) {
                     case "1" -> add();
@@ -44,31 +43,7 @@ public class ConsoleUI {
                     case "8" -> statistics();
                     case "9" -> exit();
                 }
-            } catch (IncorrectMenuChoiceException e) {
-                System.out.println(e.getMessage());
-                enter();
-            } catch (NoTaskWithThisIDInTheList e) {
-                System.out.println(e.getMessage());
-                enter();
-            } catch (EmptyTaskListException e) {
-                System.out.println(e.getMessage());
-                enter();
-            } catch (IncorrectIDException e) {
-                System.out.println(e.getMessage());
-                enter();
-            } catch (IncorrectNewTaskNameException e) {
-                System.out.println(e.getMessage());
-                enter();
-            } catch (IncorrectNewTaskPriorityException e) {
-                System.out.println(e.getMessage());
-                enter();
-            } catch (IncorrectNewTaskStatusException e) {
-                System.out.println(e.getMessage());
-                enter();
-            } catch (SameTaskStatusException e) {
-                System.out.println(e.getMessage());
-                enter();
-            } catch (NoTaskWithThisKeyWordInTheList e) {
+            } catch (MyException e) {
                 System.out.println(e.getMessage());
                 enter();
             }
@@ -76,7 +51,7 @@ public class ConsoleUI {
     }
 
     private void add() {
-        String taskName = repeatUntilEnteredCorrectly(() -> requestTaskName());
+        String taskName = repeatUntilEnteredCorrectly(this::requestTaskName);
         int taskPriority = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestTaskPriority()));
         taskService.addTask(taskName, taskPriority);
         operationCompletedSuccessfully();
@@ -85,7 +60,7 @@ public class ConsoleUI {
     private void delete() throws IncorrectIDException, EmptyTaskListException, NoTaskWithThisIDInTheList {
         userInputValidator.hasTasks(taskService.getTaskList());
         int taskID = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestID()));
-        userInputValidator.isThereAtaskWithThisIdInTheList(taskID, taskService.getTaskList());
+        userInputValidator.isThereATaskWithThisIdInTheList(taskID, taskService.getTaskList());
         taskService.deleteTask(taskID);
         operationCompletedSuccessfully();
     }
@@ -96,11 +71,10 @@ public class ConsoleUI {
         userInputValidator.hasTasks(taskService.getTaskList());
 
         int taskID = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestID()));
-        userInputValidator.isThereAtaskWithThisIdInTheList(taskID, taskService.getTaskList());
+        userInputValidator.isThereATaskWithThisIdInTheList(taskID, taskService.getTaskList());
 
-        String newTaskName = repeatUntilEnteredCorrectly(() -> requestNewTaskName());
-        int finalTaskID = taskID;
-        int newTaskPriority = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestNewTaskPriority(finalTaskID)));
+        String newTaskName = repeatUntilEnteredCorrectly(this::requestNewTaskName);
+        int newTaskPriority = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestNewTaskPriority(taskID)));
 
         taskService.editTask(taskID, newTaskName, newTaskPriority);
         operationCompletedSuccessfully();
@@ -113,10 +87,10 @@ public class ConsoleUI {
         userInputValidator.hasTasks(taskService.getTaskList());
 
         int taskID = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestID()));
-        userInputValidator.isThereAtaskWithThisIdInTheList(taskID, taskService.getTaskList());
+        userInputValidator.isThereATaskWithThisIdInTheList(taskID, taskService.getTaskList());
 
-        String newTaskStatus = repeatUntilEnteredCorrectly(() -> requestNewTaskStatus());
-        userInputValidator.isNewTaskStatusCorrect(newTaskStatus, taskService.getTaskList());
+        String newTaskStatus = repeatUntilEnteredCorrectly(this::requestNewTaskStatus);
+        userInputValidator.isNewTaskStatusCorrect(newTaskStatus);
         userInputValidator.isNewTaskStatusTheSame(newTaskStatus, taskService.getTaskList());
 
         taskService.changeTaskStatus(taskID, newTaskStatus);
@@ -173,7 +147,7 @@ public class ConsoleUI {
         System.out.println("Введите ID задачи: ");
         String input = scanner.nextLine();
 
-        if (!userInputValidator.isTheIdCorrect(input, taskService.getTaskList())) {
+        if (!userInputValidator.isTheIdCorrect(input)) {
             throw new IncorrectIDException("Неверный ID!");
         }
 
@@ -245,7 +219,7 @@ public class ConsoleUI {
         System.out.print("Ваш выбор: ");
         String input = scanner.nextLine();
 
-        if (!userInputValidator.isNewTaskStatusCorrect(input, taskService.getTaskList())) {
+        if (!userInputValidator.isNewTaskStatusCorrect(input)) {
             throw new IncorrectNewTaskStatusException("Некорректный статус");
         }
 
@@ -254,9 +228,8 @@ public class ConsoleUI {
 
     private String requestKeyWord() {
         System.out.println("Введите ключевое слово для поиска: ");
-        String keyWord = scanner.nextLine();
 
-        return keyWord;
+        return scanner.nextLine();
     }
 
     private void showMenu() {

@@ -2,7 +2,6 @@ package com.fatoldfool.todolist.taskservice;
 
 import com.fatoldfool.todolist.task.Task;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -10,7 +9,7 @@ import com.fatoldfool.todolist.taskstatus.TaskStatus;
 
 public class TaskService {
 
-    private List<Task> tasks;
+    private final List<Task> tasks;
     private int nextID = 0;
 
     public TaskService(List<Task> tasks) {
@@ -24,20 +23,9 @@ public class TaskService {
     }
 
     public void deleteTask(int taskID) {
-        Iterator<Task> taskIterator = tasks.iterator();
-        while (taskIterator.hasNext()) {
-            if (taskIterator.next().getId() == taskID) {
-                taskIterator.remove();
-            }
-        }
+        tasks.removeIf(task -> task.getId() == taskID);
 
-        int newID = 1;
-        List<Task> newList = new ArrayList<>(tasks);
-        Iterator<Task> newListIterator = newList.iterator();
-        while (newListIterator.hasNext()) {
-            newListIterator.next().setID(newID);
-            newID++;
-        }
+
 
     }
 

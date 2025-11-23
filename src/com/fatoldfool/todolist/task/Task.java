@@ -8,10 +8,10 @@ import com.fatoldfool.todolist.taskstatus.TaskStatus;
 
 public class Task {
 
-    private int id;
+    private final int id;
     private String title;
     private int priority;
-    private LocalDate creationDate;
+    private final LocalDate creationDate;
     private LocalDateTime completionTime;
     private TaskStatus taskStatus;
 
@@ -25,13 +25,13 @@ public class Task {
     }
 
     public void setTitle(String title) {
-        if(title == null || title.trim().isEmpty()) {
+        if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("❌ Название задачи не может быть пустым.");
         }
 
         String regex = "^[a-zA-Zа-яА-Я]+(\\s[a-zA-Zа-яА-Я]+)*$";
 
-        if(!title.matches(regex)) {
+        if (!title.matches(regex)) {
             throw new IllegalArgumentException("❌ Название задачи может содержать только буквы русского и английского алфавита, \" +\r\n"
                     + "\"пробелы и не должно начинаться/заканчиваться пробелом.");
         }
@@ -40,7 +40,7 @@ public class Task {
     }
 
     public void setPriority(int priority) {
-        if(priority < 1 || priority > 10) {
+        if (priority < 1 || priority > 10) {
             throw new IllegalArgumentException("❌ Приоритет должен быть от 1 до 10.");
         }
 
@@ -48,15 +48,11 @@ public class Task {
     }
 
     public void setTaskStatus(TaskStatus taskStatus) {
-        if(taskStatus == TaskStatus.COMPLETE) {
+        if (taskStatus == TaskStatus.COMPLETE) {
             this.completionTime = LocalDateTime.now();
         }
 
         this.taskStatus = taskStatus;
-    }
-
-    public void setID(int ID) {
-        this.id = ID;
     }
 
     public int getId() {
@@ -71,14 +67,6 @@ public class Task {
         return priority;
     }
 
-    public LocalDate getCreationDate() {
-        return creationDate;
-    }
-
-    public LocalDateTime getCompletionTime() {
-        return completionTime;
-    }
-
     public TaskStatus getTaskStatus() {
         return taskStatus;
     }
@@ -86,8 +74,8 @@ public class Task {
     @Override
     public boolean equals(Object o) {
 
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         return id == task.id;
     }
@@ -110,6 +98,4 @@ public class Task {
                 completionTime != null ? completionTime.format(DateTimeFormatter.ofPattern("dd-MM-yyy - HH:mm")) : "Отсутсвует"
         );
     }
-
-
 }

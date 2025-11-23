@@ -8,12 +8,10 @@ import com.fatoldfool.todolist.taskstatus.TaskStatus;
 
 public class UserInputValidator {
 
-    public boolean hasTasks(List<Task> tasks) throws EmptyTaskListException {
+    public void hasTasks(List<Task> tasks) throws EmptyTaskListException {
         if (tasks == null || tasks.isEmpty()) {
             throw new EmptyTaskListException("📭 Нет созданных задач. Добавьте первую задачу.");
         }
-
-        return true;
     }
 
     public boolean isMenuChoiceCorrect(String input) {
@@ -31,19 +29,9 @@ public class UserInputValidator {
 
     }
 
-    public boolean isTheIdCorrect(String id, List<Task> tasks) {
+    public boolean isTheIdCorrect(String id) {
 
-        if (id == null || id.isEmpty() || id.startsWith("0")) {
-            return false;
-        }
-
-        try {
-            int number = Integer.parseInt(id);
-            return number >= 1 && number <= tasks.size();
-        } catch (NumberFormatException e) {
-            return false;
-        }
-
+        return id != null && !id.isEmpty() && !id.startsWith("0");
     }
 
     public boolean isTaskNameCorrect(String input) {
@@ -60,11 +48,7 @@ public class UserInputValidator {
 
         String regex = "^[a-zA-Zа-яА-Я]+(\\s[a-zA-Zа-яА-Я]+)*$";
 
-        if (!input.matches(regex)) {
-            return false;
-        }
-
-        return true;
+        return input.matches(regex);
     }
 
     public boolean isNewTaskNameCorrect(String input, List<Task> tasks) {
@@ -95,11 +79,7 @@ public class UserInputValidator {
         try {
             int priority = Integer.parseInt(input);
 
-            if (priority < 1 || priority > 10) {
-                return false;
-            }
-
-            return true;
+            return priority >= 1 && priority <= 10;
 
         } catch (NumberFormatException e) {
             return false;
@@ -120,20 +100,20 @@ public class UserInputValidator {
         return true;
     }
 
-    public boolean isThereAtaskWithThisIdInTheList(int id, List<Task> tasks) throws NoTaskWithThisIDInTheList {
+    public void isThereATaskWithThisIdInTheList(int id, List<Task> tasks) throws NoTaskWithThisIDInTheList {
         for (Task task : tasks) {
             if (task.getId() == id) {
-                return true;
+                return;
             }
         }
         throw new NoTaskWithThisIDInTheList("Задача с ID - " + id + ", отсутсвует в списке!");
     }
 
-    public boolean isThereATaskWithThisKeyWordInTheList(String keyWord, List<Task> tasks)
+    public void isThereATaskWithThisKeyWordInTheList(String keyWord, List<Task> tasks)
             throws NoTaskWithThisKeyWordInTheList {
         for (Task task : tasks) {
             if (task.getTitle().toLowerCase().contains(keyWord)) {
-                return true;
+                return;
             }
         }
 
@@ -141,17 +121,7 @@ public class UserInputValidator {
                 "Задача с ключевым словом - \"" + keyWord + "\", отсутсвует в списке!");
     }
 
-    public boolean isKeyWordCorrect(String input) {
-
-        if (input == null || input.trim().isEmpty()) {
-            return false;
-        }
-
-        return true;
-
-    }
-
-    public boolean isNewTaskStatusCorrect(String input, List<Task> tasks) {
+    public boolean isNewTaskStatusCorrect(String input) {
 
         if (input == null || input.trim().isEmpty() || input.startsWith("0")) {
             return false;
@@ -178,7 +148,7 @@ public class UserInputValidator {
 
     }
 
-    public boolean isNewTaskStatusTheSame(String input, List<Task> tasks) throws SameTaskStatusException {
+    public void isNewTaskStatusTheSame(String input, List<Task> tasks) throws SameTaskStatusException {
         int newTaskStatus = Integer.parseInt(input);
 
         for (Task task : tasks) {
@@ -189,7 +159,6 @@ public class UserInputValidator {
             }
 
         }
-        return true;
     }
 
 }
