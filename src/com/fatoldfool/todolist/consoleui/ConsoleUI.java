@@ -58,7 +58,7 @@ public class ConsoleUI {
     }
 
     private void delete() throws IncorrectIDException, EmptyTaskListException, NoTaskWithThisIDInTheList {
-        userInputValidator.hasTasks(taskService.getTaskList());
+        userInputValidator.isTaskListEmpty(taskService.getTaskList());
         int taskID = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestID()));
         userInputValidator.isThereATaskWithThisIdInTheList(taskID, taskService.getTaskList());
         taskService.deleteTask(taskID);
@@ -68,7 +68,7 @@ public class ConsoleUI {
     private void changeTaskNameAndPriority() throws IncorrectIDException, EmptyTaskListException, NoTaskWithThisIDInTheList,
             IncorrectNewTaskNameException, IncorrectNewTaskPriorityException {
 
-        userInputValidator.hasTasks(taskService.getTaskList());
+        userInputValidator.isTaskListEmpty(taskService.getTaskList());
 
         int taskID = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestID()));
         userInputValidator.isThereATaskWithThisIdInTheList(taskID, taskService.getTaskList());
@@ -84,7 +84,7 @@ public class ConsoleUI {
     private void changeTaskStatus() throws IncorrectIDException, EmptyTaskListException, NoTaskWithThisIDInTheList,
             IncorrectNewTaskStatusException, SameTaskStatusException {
 
-        userInputValidator.hasTasks(taskService.getTaskList());
+        userInputValidator.isTaskListEmpty(taskService.getTaskList());
 
         int taskID = repeatUntilEnteredCorrectly(() -> Integer.parseInt(requestID()));
         userInputValidator.isThereATaskWithThisIdInTheList(taskID, taskService.getTaskList());
@@ -98,20 +98,20 @@ public class ConsoleUI {
     }
 
     private void showAll() throws EmptyTaskListException {
-        userInputValidator.hasTasks(taskService.getTaskList());
+        userInputValidator.isTaskListEmpty(taskService.getTaskList());
         taskService.showAllTasks();
         operationCompletedSuccessfully();
     }
 
     private void filter() throws EmptyTaskListException {
-        userInputValidator.hasTasks(taskService.getTaskList());
+        userInputValidator.isTaskListEmpty(taskService.getTaskList());
         taskService.filterTasksByStatus();
         operationCompletedSuccessfully();
 
     }
 
     private void findByKeyWord() throws EmptyTaskListException, NoTaskWithThisKeyWordInTheList {
-        userInputValidator.hasTasks(taskService.getTaskList());
+        userInputValidator.isTaskListEmpty(taskService.getTaskList());
 
         String keyWord = requestKeyWord();
         userInputValidator.isThereATaskWithThisKeyWordInTheList(keyWord, taskService.getTaskList());
@@ -121,7 +121,7 @@ public class ConsoleUI {
     }
 
     private void statistics() throws EmptyTaskListException {
-        userInputValidator.hasTasks(taskService.getTaskList());
+        userInputValidator.isTaskListEmpty(taskService.getTaskList());
         taskService.showStatistics();
         operationCompletedSuccessfully();
     }

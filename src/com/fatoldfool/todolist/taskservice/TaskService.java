@@ -14,19 +14,14 @@ public class TaskService {
 
     public TaskService(List<Task> tasks) {
         this.tasks = tasks;
-
     }
 
     public void addTask(String name, int priority) {
         tasks.add(new Task(++nextID, name, priority, TaskStatus.NOT_COMPLETE));
-
     }
 
     public void deleteTask(int taskID) {
         tasks.removeIf(task -> task.getId() == taskID);
-
-
-
     }
 
     public void editTask(int taskID, String newName, int newPriority) {
@@ -36,11 +31,9 @@ public class TaskService {
                 task.setPriority(newPriority);
             }
         }
-
     }
 
     public void changeTaskStatus(int taskID, String newTaskStatus) {
-
         for (Task task : tasks) {
             if (task.getId() == taskID) {
                 switch (newTaskStatus) {
@@ -53,14 +46,12 @@ public class TaskService {
     }
 
     public void showAllTasks() {
-
         for (Task task : this.tasks) {
             System.out.println(task);
         }
     }
 
     public void filterTasksByStatus() {
-
         List<Task> completedTasks = new ArrayList<>();
         List<Task> inProgressTasks = new ArrayList<>();
         List<Task> notCompletedTasks = new ArrayList<>();
@@ -102,9 +93,7 @@ public class TaskService {
     }
 
     public void findTaskByKeyWord(String keyWord) {
-
         List<Task> found = new ArrayList<>();
-
         String normilized = keyWord.toLowerCase();
 
         for (Task task : tasks) {

@@ -8,7 +8,7 @@ import com.fatoldfool.todolist.taskstatus.TaskStatus;
 
 public class UserInputValidator {
 
-    public void hasTasks(List<Task> tasks) throws EmptyTaskListException {
+    public void isTaskListEmpty(List<Task> tasks) throws EmptyTaskListException {
         if (tasks == null || tasks.isEmpty()) {
             throw new EmptyTaskListException("📭 Нет созданных задач. Добавьте первую задачу.");
         }
